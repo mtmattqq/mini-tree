@@ -1,7 +1,7 @@
 use std::{
     env::args, fs, path::Path
 };
-use colored::Colorize;
+use colored::{ColoredString, Colorize};
 
 fn main() {
     let args: Vec<String> = args().collect();
@@ -29,24 +29,12 @@ fn find_all(folder: &Path) -> Result<(), String> {
     let mut depth_stack: Vec<i32> = Vec::new();
     dir_stack.push(folder.into());
     depth_stack.push(0);
-    let color = ["-".bright_blue(), "-".red(), "-".green()];
 
     while dir_stack.len() > 0 {
         let file_name = dir_stack.last().clone().unwrap();
         let depth = depth_stack.last().unwrap().clone();
-        if depth > 0 { print!("{}", "|".yellow());}
-        for i in 0..depth {
-            let len = color.len() as i32;
-            for _ in 0..4 {
-                print!("{}", color[(i % len) as usize]);
-            } 
-        }
-        if depth > 0 { print!(" ");}
+        print_file(file_name, depth);
         depth_stack.pop();
-        println!("{}", file_name
-            .to_str().unwrap()
-            .split('/')
-            .last().unwrap());
         
         let dir = dir_stack.last().unwrap();
         let dir = fs::read_dir(dir);
@@ -67,4 +55,20 @@ fn find_all(folder: &Path) -> Result<(), String> {
         }
     }
     Ok(())
+}
+
+fn print_file(file_name: &Path, depth: i32) {
+    let color: [ColoredString; 3] = ["-".bright_blue(), "-".red(), "-".green()];
+    if depth > 0 { print!("{}", "|".yellow());}
+    for i in 0..depth {
+        let len = color.len() as i32;
+        for _ in 0..4 {
+            print!("{}", color[(i % len) as usize]);
+        } 
+    }
+    if depth > 0 { print!(" ");}
+    println!("{}", file_name
+            .to_str().unwrap()
+            .split('/')
+            .last().unwrap());
 }
