@@ -6,11 +6,13 @@ use colored::{ColoredString, Colorize};
 fn main() {
     let args: Vec<String> = args().collect();
     if args.len() == 1 {
-        println!("Too few argument: missing folder name");
+        println!("USAGE: mini-tree <file-path>");
+        println!("{}", "Too few argument: missing folder name".red());
         return;
     }
     else if args.len() > 2 {
-        println!("Too many argument");
+        println!("USAGE: mini-tree <file-path>");
+        println!("{}", "Too many argument".red());
     }
 
     let folder = Path::new(&args[1]);
