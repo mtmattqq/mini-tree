@@ -60,12 +60,17 @@ fn find_all(folder: &Path) -> Result<(), String> {
 }
 
 fn print_file(file_name: &Path, depth: i32) {
-    let color: [ColoredString; 3] = ["-".bright_blue(), "-".red(), "-".green()];
-    if depth > 0 { print!("{}", "|".yellow());}
-    for i in 0..depth {
-        let len = color.len() as i32;
-        for _ in 0..4 {
-            print!("{}", color[(i % len) as usize]);
+    let color_dash: [ColoredString; 3] = ["-".bright_blue(), "-".red(), "-".green()];
+    let color_bar: [ColoredString; 3] = ["|".bright_blue(), "|".red(), "|".green()];
+    for i in 0..depth - 1 {
+        let len = color_bar.len() as i32;
+        print!("{}    ", color_bar[(i % len) as usize]);
+    }
+    if depth > 0 {
+        let len = color_bar.len() as i32;
+        print!("{}", color_bar[((depth - 1) % len) as usize]);
+        for _ in 0..3 {
+            print!("{}", color_dash[((depth - 1) % len) as usize]);
         } 
     }
     if depth > 0 { print!(" ");}
