@@ -13,6 +13,7 @@ fn main() {
     else if args.len() > 2 {
         println!("USAGE: mini-tree <file-path>");
         println!("{}", "Too many argument".red());
+        return;
     }
 
     let folder = Path::new(&args[1]);
@@ -43,13 +44,18 @@ fn find_all(folder: &Path) -> Result<(), String> {
         dir_stack.pop();
         let dir = match dir {
             Ok(d) => d,
-            Err(_) => continue,
+            Err(e) => {
+                if e.kind() == std::io::ErrorKind::PermissionDenied {
+                    println!("Error: {}", e);
+                }
+                continue;
+            }
         };
 
         for entry in dir {
             let entry = match entry {
                 Ok(e) => e,
-                Err(_) => break,
+                Err(e) => return Err(e.to_string()),
             };
             let path = entry.path();
             dir_stack.push(path.into());
